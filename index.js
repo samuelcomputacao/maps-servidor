@@ -1,6 +1,6 @@
 //index.js
-const app = require('./app');
-const appWs = require('./app-ws');
+const app = require('./src/server/app');
+const appWs = require('./src/websocket/app-ws');
 
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`App Express is running!`);
