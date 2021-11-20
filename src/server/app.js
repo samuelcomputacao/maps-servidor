@@ -9,13 +9,10 @@ const routes = require('./routes');
 const app = express();
 
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
-
 app.use(helmet());
-
 app.use(express.json());
 
 app.use(morgan('dev'));
-
 app.use(routes);
 
 module.exports = app;
