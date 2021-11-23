@@ -8,7 +8,7 @@ const routes = require('./routes');
 
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+app.use(cors());
 app.use(helmet());
 app.use(express.json());
 

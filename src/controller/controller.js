@@ -1,35 +1,32 @@
-const database = require("../datatabase/database");
+require("dotenv/config");
+const citiesService = require("../service/cities/citiesService");
+const routesService = require("../service/routes/routesService");
 
 const getCities = async (request, response) => {
-  const { name, exclude } = request.query;
-
-  const where = ["1=1"];
-
-  if (name && name.length > 0) {
-    where.push(`UPPER(name) LIKE UPPER('${name}%')`);
+  try {
+    const { name, exclude } = request.query;
+    const rows = await citiesService.getCities(name, exclude);
+    return response.status(200).send(rows);
+  } catch (err) {
+    return response.status(500);
   }
-
-  if (exclude) {
-    where.push(`cod != '${exclude}'`);
-  }
-
-  const connection = await database.connectDB();
-  const sql = `SELECT cod, name, uf, latitude, longitude FROM cities WHERE ${where.join(
-    " AND "
-  )} LIMIT 5`;
-  const result = await connection.query(sql);
-  const rows = result.rows.map((row) => {
-    return {
-      cod: row.cod,
-      name: row.name,
-      uf: row.uf,
-      point: {
-        latitude: row.latitude,
-        longitude: row.longitude,
-      },
-    };
-  });
-  return response.status(200).send(rows);
 };
 
-module.exports = { getCities };
+const getRoutes = async (request, response) => {
+  const { origin, destination } = request.query;
+  if (!origin) {
+    return response.status(400).send("Origin is required!");
+  }
+  if (!destination) {
+    return response.status(400).send("Destination is required!");
+  }
+  try {
+    const polyline = await routesService.getRoutes(origin, destination);
+    return response.status(200).send(polyline);
+  } catch (err) {
+    console.error(err);
+    return response.status(500).send("Internal server error!");
+  }
+};
+
+module.exports = { getCities, getRoutes };

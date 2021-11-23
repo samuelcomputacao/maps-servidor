@@ -6,9 +6,9 @@ const server = app.listen(process.env.PORT || 3000, () => {
     console.log(`App Express is running!`);
 })
 
-const ws = appWs(server);
+// const ws = appWs(server);
 
-setInterval(() => {
-    ws.broadcast(
-        {numero: Math.random()});
-}, 1000)
+// setInterval(() => {
+//     ws.broadcast(
+//         {numero: Math.random()});
+// }, 1000)
