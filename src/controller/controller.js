@@ -29,4 +29,5 @@ const getRoutes = async (request, response) => {
   }
 };
 
-module.exports = { getCities, getRoutes };
+
+module.exports = { getCities, getRoutes};
