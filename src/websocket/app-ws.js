@@ -1,4 +1,5 @@
 const WebSocket = require("ws");
+const util = require('../util/util');
 
 function onError(ws, err) {
   console.error(`onError: ${err.message}`);
@@ -10,7 +11,8 @@ function dispatchMsg(ws, type, value) {
       ws.KEY_WS = value;
       break;
     case "POSITION":
-      ws.position = value;
+      ws.position = value.position;
+      ws.route = value.route;
       break;
     case "CLOSE":
       ws.close();
@@ -21,7 +23,6 @@ function dispatchMsg(ws, type, value) {
 }
 
 function onMessage(ws, data) {
-  console.log(`onMessage: ${data.toString()}`);
   const { type, value } = JSON.parse(data);
   if (type && value) {
     dispatchMsg(ws, type, value);
@@ -39,7 +40,7 @@ function broadcast(jsonObject) {
   this.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       if (client.KEY_WS && client.KEY_WS === process.env.KEY_WS) {
-        client.send(JSON.stringify("opaaa"));
+        client.send(JSON.stringify(util.routeOfInterest(client.position, client.route)));
       }
     }
   });

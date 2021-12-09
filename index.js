@@ -10,4 +10,4 @@ const ws = appWs(server);
 setInterval(() => {
     ws.broadcast(
         {numero: Math.random()});
-}, 1000)
+}, 5000)
