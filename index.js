@@ -8,6 +8,5 @@ const server = app.listen(process.env.PORT || 3000, () => {
 const ws = appWs(server);
 
 setInterval(() => {
-    ws.broadcast(
-        {numero: Math.random()});
-}, 5000)
+    ws.broadcast();
+}, 10000)

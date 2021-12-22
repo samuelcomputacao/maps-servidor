@@ -1,5 +1,7 @@
 const WebSocket = require("ws");
-const util = require('../util/util');
+const util = require("../util/util");
+
+const routesService = require("../service/routes/routesService");
 
 function onError(ws, err) {
   console.error(`onError: ${err.message}`);
@@ -35,12 +37,15 @@ function onConnection(ws, _) {
   console.log(`onConnection`);
 }
 
-function broadcast(jsonObject) {
+function broadcast() {
   if (!this.clients) return;
-  this.clients.forEach((client) => {
+  this.clients.forEach(async (client) => {
     if (client.readyState === WebSocket.OPEN) {
       if (client.KEY_WS && client.KEY_WS === process.env.KEY_WS) {
-        client.send(JSON.stringify(util.routeOfInterest(client.position, client.route)));
+        const route = util.routeOfInterest(client.position, client.route);
+        const pois = await routesService.getPois(route);
+        console.log(pois);
+        client.send(JSON.stringify({ type: "POIS", value: pois }));
       }
     }
   });

@@ -24,12 +24,12 @@ const makePolyline = (polyline) => {
   return pontos;
 };
 
-const getPoi = async (route) => {
+const getPois = async (route) => {
   const st_poins = route.map((p) => {
     return makeSTPoint(p);
   });
 
-  const sql = `SELECT texto, latitude, longitude FROM notificacoes WHERE ST_CONTAINS(ST_BUFFER(ST_SETSRID (ST_MAKELINE( ARRAY[${st_poins.join(
+  const sql = `SELECT id, texto, latitude, longitude FROM notificacoes WHERE ST_CONTAINS(ST_BUFFER(ST_SETSRID (ST_MAKELINE( ARRAY[${st_poins.join(
     ","
   )}]),${process.env.SRID_DEFAULT})::geography,${
     process.env.LENGTH_BUFFER
@@ -42,6 +42,7 @@ const getPoi = async (route) => {
   const result = await connection.query(sql);
   const rows = result.rows.map((row) => {
     return {
+      id: row.id,
       texto: row.texto,
       point: {
         latitude: parseFloat(row.latitude),
@@ -1289,12 +1290,12 @@ const getRoutes = async (origin, destination) => {
     },
   ];
 
-  const poi = await getPoi(route);
+  const pois = await getPois(route);
 
-  return { route: route, poi: poi };
+  return { route: route };
   // } else {
   //   return { route: null, poi: null };
   // }
 };
 
-module.exports = { getRoutes };
+module.exports = { getRoutes, getPois };
