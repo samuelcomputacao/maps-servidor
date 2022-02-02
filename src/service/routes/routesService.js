@@ -55,9 +55,9 @@ const getPois = async (route) => {
 
 const getRoutes = async (origin, destination) => {
   const url = `${process.env.GOOGLE_API_DIRECTIONS}?origin=${origin}&destination=${destination}&key=${process.env.GOOGLE_API_KEY}&mode=${process.env.GOOGLE_API_MODE}`;
-  // const { data } = await axios.get(url);
-  // if (data.status === "OK") {
-  // const traject = makePolyline(data.routes.shift().overview_polyline.points);
+  const { data } = await axios.get(url);
+  if (data.status === "OK") {
+  const traject = makePolyline(data.routes.shift().overview_polyline.points);
 
   const route = [
     {
@@ -1292,10 +1292,10 @@ const getRoutes = async (origin, destination) => {
 
   const pois = await getPois(route);
 
-  return { route: route };
-  // } else {
-  //   return { route: null, poi: null };
-  // }
+  return { route: traject };
+  } else {
+    return { route: null, poi: null };
+  }
 };
 
 module.exports = { getRoutes, getPois };
